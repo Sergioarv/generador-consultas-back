@@ -25,7 +25,7 @@ public class Query implements Serializable {
     @Column(nullable = false)
     private String querysave;
 
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "query")
     private List<Comment> comments;
 
     /***********************/

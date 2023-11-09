@@ -20,7 +20,7 @@ public class Comment implements Serializable {
     private int idcomment;
 
     @Column(nullable = false)
-    private String user;
+    private String userregister;
 
     @Column(nullable = false)
     private String commentary;
@@ -41,12 +41,12 @@ public class Comment implements Serializable {
         this.idcomment = idcomment;
     }
 
-    public String getUser() {
-        return user;
+    public String getUserregister() {
+        return userregister;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUserregister(String userregister) {
+        this.userregister = userregister;
     }
 
     public String getCommentary() {
