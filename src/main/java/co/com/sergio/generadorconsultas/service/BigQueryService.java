@@ -28,10 +28,11 @@ public class BigQueryService {
         this.bigQuery = bigQuery;
     }
 
+
     public List<SchedulesDTO> runQuery(String sqlQuery) throws InterruptedException {
 
         try {
-            String encodedSqlQuery = URLEncoder.encode(sqlQuery, "UTF-8");
+            //String encodedSqlQuery = URLEncoder.encode(sqlQuery, "UTF-8");
             QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(
                     "SELECT * FROM bigquery-public-data.baseball.schedules where dayNight = 'N' LIMIT 10").build();
             TableResult result = bigQuery.query(queryConfig);
@@ -52,10 +53,9 @@ public class BigQueryService {
         } catch (BigQueryException e) {
             // Manejar las excepciones específicas de BigQuery
             throw new RuntimeException("Error de BigQuery: " + e.getMessage(), e);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("No soporta caracteres: " + e.getMessage(), e);
-        } catch (ParseException e) {
-            throw new RuntimeException("Error al momento de convertir la fecha: " + e.getMessage(), e);
         }
+//        } catch (UnsupportedEncodingException e) {
+//            throw new RuntimeException("No soporta caracteres: " + e.getMessage(), e);
+//        }
     }
 }

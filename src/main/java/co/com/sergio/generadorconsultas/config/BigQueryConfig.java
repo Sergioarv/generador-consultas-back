@@ -18,6 +18,13 @@ import java.io.IOException;
 @Configuration
 public class BigQueryConfig {
 
+    /**
+     * Configura y devuelve un bean de BigQuery.
+     * Se utiliza el archivo "credentials.json" para obtener las credenciales de Google Cloud.
+     *
+     * @return Instancia de BigQuery configurada.
+     * @throws IOException, Si hay un error al leer las credenciales desde el archivo.
+     */
     @Bean
     public BigQuery bigQuery() throws IOException {
 

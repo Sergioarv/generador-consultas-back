@@ -6,7 +6,7 @@ import com.google.cloud.bigquery.FieldValueList;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
+import java.util.TimeZone;
 
 /**
  * Author: Ing Sergio Abelardo Rodríguez Vásquez
@@ -16,7 +16,12 @@ import java.time.Instant;
 
 public class ConvertTo {
 
-    public SchedulesDTO convertFieldValueListToSchedulesDTO(FieldValueList fieldValueList) throws ParseException {
+    /**
+     * Método encargado de convertir un ResultList a SchedulesDTO
+     * @param fieldValueList, lista de parametros retornado por el BigQuery
+     * @return Objecto SchedulesDTO con los parametros seteados
+     */
+    public SchedulesDTO convertFieldValueListToSchedulesDTO(FieldValueList fieldValueList) {
 
         SchedulesDTO schedulesDTO = new SchedulesDTO();
 
@@ -34,19 +39,25 @@ public class ConvertTo {
         schedulesDTO.setAwayTeamName(fieldValueList.get("awayTeamName").getStringValue());
         schedulesDTO.setAttendance(fieldValueList.get("attendance").getNumericValue().intValue());
         schedulesDTO.setStatus(fieldValueList.get("status").getStringValue());
-        schedulesDTO.setCreated(new Timestamp(fieldValueList.get("created").getTimestampValue() * 1000));
-
-        long startTimeValue = fieldValueList.get("startTime").getNumericValue().longValue();
-        Timestamp startTime = new Timestamp(startTimeValue*1000);
-
-        // Establecer el formato deseado
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String formattedDateTime = dateFormat.format(startTime);
-
-        System.out.println(schedulesDTO.getGameId() +"-" +formattedDateTime);
-
-        schedulesDTO.setStartTime(new Timestamp(fieldValueList.get("created").getTimestampValue() * 1000));
+        schedulesDTO.setStartTime(convertTimestamp(fieldValueList.get("startTime").getNumericValue().longValue()) + " UTC");
+        schedulesDTO.setCreated(convertTimestamp(fieldValueList.get("created").getNumericValue().longValue()) + " UTC");
 
         return schedulesDTO;
+    }
+
+    /**
+     * Método encargado de dar formato al Timestamp recibido desde la base de datos
+     * @param timestamp, Timestamp a dar formato
+     * @return String del Timestamp con el formato correcto
+     */
+    private String convertTimestamp(long timestamp) {
+
+        Timestamp startTime = new Timestamp(timestamp * 1000);
+
+        // Establecer el formato deseado
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        return dateFormat.format(startTime);
     }
 }

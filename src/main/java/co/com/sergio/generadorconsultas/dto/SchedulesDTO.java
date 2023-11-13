@@ -2,8 +2,6 @@ package co.com.sergio.generadorconsultas.dto;
 
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
 
 /**
  * Author: Ing Sergio Abelardo Rodríguez Vásquez
@@ -25,10 +23,10 @@ public class SchedulesDTO {
     private String awayTeamId;
     private String awayTeamName;
 
-    private Timestamp startTime;
+    private String startTime;
     private Integer attendance;
     private String status;
-    private Timestamp created;
+    private String created;
 
     /***********************/
     /** Getter and Setter **/
@@ -130,11 +128,11 @@ public class SchedulesDTO {
         this.awayTeamName = awayTeamName;
     }
 
-    public Timestamp getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Timestamp startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
@@ -154,11 +152,11 @@ public class SchedulesDTO {
         this.status = status;
     }
 
-    public Timestamp getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(Timestamp created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 }
