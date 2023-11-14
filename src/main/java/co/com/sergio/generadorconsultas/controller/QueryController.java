@@ -4,6 +4,10 @@ import co.com.sergio.generadorconsultas.entity.Query;
 import co.com.sergio.generadorconsultas.service.QueryService;
 import co.com.sergio.generadorconsultas.utils.GeneralResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,13 +64,60 @@ public class QueryController {
     }
 
     /**
+     * Método encargado de buscar las querys por nombre de la query o nombre del usuario
+     *
+     * @param name,          nombre con la que se encuentra guardada la query
+     * @param userresgister, usuario que realiza el comentario en la query
+     * @param pag,           número de la página a buscar
+     * @param sizePag,       cantidad de elementos por pagona
+     * @return Un Page o una paginación de los resultados
+     */
+    @GetMapping("/filter")
+    public ResponseEntity<GeneralResponse<Page<Query>>> filter(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "userregister", required = false) String userresgister,
+            @RequestParam(value = "pag", defaultValue = "0", required = false) int pag,
+            @RequestParam(value = "sizePag", defaultValue = "10", required = false) int sizePag
+    ) {
+        GeneralResponse<Page<Query>> response = new GeneralResponse<>();
+        HttpStatus status = HttpStatus.OK;
+        Page<Query> data;
+
+        Pageable pageable = PageRequest.of(pag, sizePag, Sort.by("idquery").ascending());
+
+        data = queryService.filterQuerys(name, userresgister, pageable);
+
+        if (data != null) {
+            response.setData(data);
+            response.setSuccess(true);
+
+            if (data.getContent().size() > 1) {
+                response.setMessage("Lista de querys obtenida con exito");
+            } else if (data.getContent().size() == 1) {
+                response.setMessage("Query obtenida con exito");
+            } else {
+                response.setSuccess(false);
+                response.setMessage("La lista de querys esta vacia");
+            }
+        } else {
+            response.setData(null);
+            response.setSuccess(false);
+            response.setMessage("Hubo un error al obtener la lista de querys");
+        }
+
+        return new ResponseEntity<>(response, status);
+    }
+
+    /**
      * Método encargado de guardar una query
      *
      * @param query, entidad query que será guardada
      * @return la query guardada en la base de datos
      */
     @PostMapping
-    public ResponseEntity<GeneralResponse<Query>> saveQuery(Query query) {
+    public ResponseEntity<GeneralResponse<Query>> saveQuery(@RequestBody Query query) {
+
+        System.out.println(query);
 
         GeneralResponse<Query> response = new GeneralResponse<>();
         Query data;

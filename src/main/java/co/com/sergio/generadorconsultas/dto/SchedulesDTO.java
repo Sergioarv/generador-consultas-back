@@ -22,7 +22,6 @@ public class SchedulesDTO {
     private String homeTeamName;
     private String awayTeamId;
     private String awayTeamName;
-
     private String startTime;
     private Integer attendance;
     private String status;

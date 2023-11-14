@@ -22,8 +22,8 @@ public class Query implements Serializable {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String querysave;
+    @OneToOne(cascade = CascadeType.ALL)
+    private QuerySave querysave;
 
     @OneToMany(mappedBy = "query")
     private List<Comment> comments;
@@ -48,11 +48,11 @@ public class Query implements Serializable {
         this.name = name;
     }
 
-    public String getQuerysave() {
+    public QuerySave getQuerysave() {
         return querysave;
     }
 
-    public void setQuerysave(String querysave) {
+    public void setQuerysave(QuerySave querysave) {
         this.querysave = querysave;
     }
 
