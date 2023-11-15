@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Author: Ing Sergio Abelardo Rodríguez Vásquez
@@ -21,6 +22,7 @@ public class CommentServiceImpl implements CommentService {
 
     /**
      * Método encargado dede listar todas comments de la base de datos
+     *
      * @return una List con los comments de la base de datos
      */
     @Override
@@ -30,31 +32,49 @@ public class CommentServiceImpl implements CommentService {
 
     /**
      * Método encargado de guardar un comment
+     *
      * @param comment, entidad comment que será guardada
      * @return la comment guardada en la base de datos
      */
     @Override
     public Comment saveComments(Comment comment) {
-        return null;
+
+        return commentRepository.save(comment);
     }
 
     /**
      * Método encargado de actualizar una comment
+     *
      * @param comment, entidad comment a actualizar con los datos actualizados
      * @return La comment actualizada en la base de datos
      */
     @Override
     public Comment updateComment(Comment comment) {
+
+        Optional<Comment> result = commentRepository.findById(comment.getIdcomment());
+
+        if (result.isPresent()) {
+            commentRepository.save(comment);
+        }
+
         return null;
     }
 
     /**
      * Método encargado de eliminar una comment
+     *
      * @param comment, entidad a eliminar
      * @return booleano para verificar la eliminación de el comment
      */
     @Override
     public boolean deleteComment(Comment comment) {
+
+        Optional<Comment> result = commentRepository.findById(comment.getIdcomment());
+
+        if (result.isPresent()) {
+            commentRepository.delete(comment);
+        }
+
         return false;
     }
 }

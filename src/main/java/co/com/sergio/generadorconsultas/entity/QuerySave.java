@@ -77,4 +77,8 @@ public class QuerySave implements Serializable {
     public void setYear(String year) {
         this.year = year;
     }
+
+    public void setQuery(Query query) {
+        this.query = query;
+    }
 }

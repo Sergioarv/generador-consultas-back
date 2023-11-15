@@ -123,18 +123,23 @@ public class QueryController {
         Query data;
         HttpStatus status = HttpStatus.OK;
 
-        data = queryService.saveQuery(query);
+        try {
+            data = queryService.saveQuery(query);
 
-        if (data != null) {
-            response.setData(data);
-            response.setSuccess(true);
-            response.setMessage("Se guardo correctamente la query");
-        } else {
+            if (data != null) {
+                response.setData(data);
+                response.setSuccess(true);
+                response.setMessage("Se guardo correctamente la query");
+            } else {
+                response.setData(null);
+                response.setSuccess(false);
+                response.setMessage("Hubo un error al guardar la query");
+            }
+        }catch (Exception e){
             response.setData(null);
             response.setSuccess(false);
-            response.setMessage("Hubo un error al guardar la query");
+            response.setMessage(e.getMessage());
         }
-
         return new ResponseEntity<>(response, status);
     }
 
@@ -145,22 +150,28 @@ public class QueryController {
      * @return La query actualizada en la base de datos
      */
     @PutMapping
-    public ResponseEntity<GeneralResponse<Query>> updateQuery(Query query) {
+    public ResponseEntity<GeneralResponse<Query>> updateQuery(@RequestBody Query query) {
 
         GeneralResponse<Query> response = new GeneralResponse<>();
         Query data;
         HttpStatus status = HttpStatus.OK;
 
-        data = queryService.updateQuery(query);
+        try{
+            data = queryService.updateQuery(query);
 
-        if (data != null) {
-            response.setData(data);
-            response.setSuccess(true);
-            response.setMessage("Se guardo correctamente la query");
-        } else {
+            if (data != null) {
+                response.setData(data);
+                response.setSuccess(true);
+                response.setMessage("Se guardo correctamente la query");
+            } else {
+                response.setData(null);
+                response.setSuccess(false);
+                response.setMessage("Hubo un error al actualizar la query");
+            }
+        }catch (Exception e){
             response.setData(null);
             response.setSuccess(false);
-            response.setMessage("Hubo un error al actualizar la query");
+            response.setMessage(e.getMessage());
         }
 
         return new ResponseEntity<>(response, status);
@@ -173,7 +184,7 @@ public class QueryController {
      * @return booleano para verificar la eliminación de la query
      */
     @DeleteMapping
-    public ResponseEntity<GeneralResponse<Boolean>> deleteQuery(Query query) {
+    public ResponseEntity<GeneralResponse<Boolean>> deleteQuery(@RequestBody Query query) {
 
         GeneralResponse<Boolean> response = new GeneralResponse<>();
         boolean data;
@@ -188,7 +199,7 @@ public class QueryController {
         } else {
             response.setData(true);
             response.setSuccess(true);
-            response.setMessage("Se ha podido eliminar la query");
+            response.setMessage("No se ha podido eliminar la query");
         }
 
         return new ResponseEntity<>(response, status);

@@ -1,7 +1,10 @@
 package co.com.sergio.generadorconsultas.service;
 
+import co.com.sergio.generadorconsultas.entity.Comment;
 import co.com.sergio.generadorconsultas.entity.Query;
+import co.com.sergio.generadorconsultas.repository.CommentRepository;
 import co.com.sergio.generadorconsultas.repository.QueryRepository;
+import co.com.sergio.generadorconsultas.repository.QuerySaveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Author: Ing Sergio Abelardo Rodríguez Vásquez
@@ -21,6 +25,12 @@ public class QueryServiceImpl implements QueryService {
 
     @Autowired
     QueryRepository queryRepository;
+
+    @Autowired
+    QuerySaveRepository querySaveRepository;
+
+    @Autowired
+    CommentRepository commentRepository;
 
     /**
      * Método encargado dede listar todas querys de la base de datos
@@ -49,11 +59,11 @@ public class QueryServiceImpl implements QueryService {
 
         if (name != null && userresgister != null) {
             resultList = queryRepository.filterNameAndUser(name, userresgister, pageable);
-        } else if(name != null){
+        } else if (name != null) {
             resultList = queryRepository.filterName(name, pageable);
         } else if (userresgister != null) {
             resultList = queryRepository.filterUser(userresgister, pageable);
-        }else{
+        } else {
             resultList = queryRepository.findAll(pageable);
         }
 
@@ -70,12 +80,21 @@ public class QueryServiceImpl implements QueryService {
     @Transactional
     public Query saveQuery(Query query) {
 
-        if(queryRepository.findByName(query.getName()).isPresent()){
+        if (queryRepository.findByName(query.getName()).isPresent()) {
             throw new RuntimeException("El nombre de la query ya existe");
+        }
+
+        Query querySaved;
+
+        querySaved = queryRepository.save(query);
+
+        for (Comment c : querySaved.getComments()) {
+            c.setQuery(querySaved);
         }
 
         return queryRepository.save(query);
     }
+
 
     /**
      * Método encargado de actualizar una query
@@ -86,6 +105,20 @@ public class QueryServiceImpl implements QueryService {
     @Override
     @Transactional
     public Query updateQuery(Query query) {
+
+        Query querySaved = queryRepository.findById(query.getIdquery()).orElse(null);
+
+        if (querySaved != null) {
+
+            querySaved = queryRepository.save(query);
+
+            for (Comment c : querySaved.getComments()) {
+                c.setQuery(querySaved);
+            }
+
+            return queryRepository.save(querySaved);
+
+        }
         return null;
     }
 
@@ -98,6 +131,14 @@ public class QueryServiceImpl implements QueryService {
     @Override
     @Transactional
     public boolean deleteQuery(Query query) {
+
+        Optional<Query> result = queryRepository.findById(query.getIdquery());
+
+        if (result.isPresent()) {
+            queryRepository.delete(result.get());
+            return true;
+        }
+
         return false;
     }
 

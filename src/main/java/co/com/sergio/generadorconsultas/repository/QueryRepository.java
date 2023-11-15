@@ -60,5 +60,10 @@ public interface QueryRepository extends JpaRepository<Query, Integer> {
     )
     Page<Query> filterUser(String user, Pageable pageable);
 
+    /**
+     * Query encargada de realizar la busqueda por nombre de la query
+     * @param name, nombre de la query que se busca
+     * @return Un optional de Query buscada por el parametro nombre
+     */
     Optional<Query> findByName(String name);
 }
