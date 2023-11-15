@@ -3,6 +3,7 @@ package co.com.sergio.generadorconsultas.entity;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,11 +23,25 @@ public class Query implements Serializable {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String querysave;
+    @OneToOne(cascade = CascadeType.ALL)
+    private QuerySave querysave;
 
-    @OneToMany(mappedBy = "query")
+    @OneToMany(mappedBy = "query", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
+
+    public void addcomment(Comment comment) {
+        if (this.comments == null) {
+            this.comments = new ArrayList<>();
+        }
+
+        this.comments.add(comment);
+        comment.setQuery(this);
+    }
+
+    public void removeComment(Comment comment){
+        this.comments.remove(comment);
+        comment.setQuery(null);
+    }
 
     /***********************/
     /** Getter and Setter **/
@@ -48,11 +63,11 @@ public class Query implements Serializable {
         this.name = name;
     }
 
-    public String getQuerysave() {
+    public QuerySave getQuerysave() {
         return querysave;
     }
 
-    public void setQuerysave(String querysave) {
+    public void setQuerysave(QuerySave querysave) {
         this.querysave = querysave;
     }
 
