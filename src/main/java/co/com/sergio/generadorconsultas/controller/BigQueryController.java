@@ -51,7 +51,7 @@ public class BigQueryController {
             @RequestParam(value = "duration", required = false) String duration,
             @RequestParam(value = "status", required = false) String status,
             @RequestParam(value = "year", required = false) String year,
-            @RequestParam(value = "conditiaonal", defaultValue = "and", required = false) String conditional,
+            @RequestParam(value = "conditiaonal", defaultValue = "or", required = false) String conditional,
             @RequestParam(value = "pag", defaultValue = "0", required = false) int pag,
             @RequestParam(value = "sizePag", defaultValue = "10", required = false) int sizePag
     ) {

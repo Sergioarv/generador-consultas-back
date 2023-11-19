@@ -116,7 +116,7 @@ public class BigQueryService {
                 params.append(" ").append(conditional).append(" gameNumber = ").append(gameNumber);
             }
         }
-// verifica si se busca por parametro dayNight
+        // verifica si se busca por parametro dayNight
         if (dayNight != null && !dayNight.isEmpty()) {
             //verifica si ya hay parametros de busqueda
             // Si no hay genera la estructura con un where y el parametro
@@ -138,7 +138,7 @@ public class BigQueryService {
                 params.append(" ").append(conditional).append(" duration = '").append(duration).append("'");
             }
         }
-// verifica si se busca por parametro status
+        // verifica si se busca por parametro status
         if (status != null && !status.isEmpty()) {
             //verifica si ya hay parametros de busqueda
             // Si no hay genera la estructura con un where y el parametro
@@ -149,7 +149,7 @@ public class BigQueryService {
                 params.append(" ").append(conditional).append(" status = '").append(status).append("'");
             }
         }
-// verifica si se busca por parametro year
+        // verifica si se busca por parametro year
         if (year != null && !year.isEmpty()) {
             //verifica si ya hay parametros de busqueda
             // Si no hay genera la estructura con un where y el parametro
