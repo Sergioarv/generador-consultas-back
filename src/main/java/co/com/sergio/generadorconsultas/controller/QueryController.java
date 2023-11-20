@@ -117,8 +117,6 @@ public class QueryController {
     @PostMapping
     public ResponseEntity<GeneralResponse<Query>> saveQuery(@RequestBody Query query) {
 
-        System.out.println(query);
-
         GeneralResponse<Query> response = new GeneralResponse<>();
         Query data;
         HttpStatus status = HttpStatus.OK;

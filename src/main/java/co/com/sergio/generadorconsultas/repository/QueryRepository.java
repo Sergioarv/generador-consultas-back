@@ -27,7 +27,9 @@ public interface QueryRepository extends JpaRepository<Query, Integer> {
      * @return Page o Paginacion de querys resultantes
      */
     @org.springframework.data.jpa.repository.Query(
-            value = "select q.* from public.query as q inner join (select * from public.comment as c where c.userregister = :user) as rs on q.idquery = rs.idquery where q.name = :name",
+            value = "select q.* from public.query as q inner join " +
+                    "(select * from public.comment as c where lower(c.userregister) like lower(concat('%',:user,'%')) as rs " +
+                    "on q.idquery = rs.idquery where lower(name) like lower(concat('%',:name,'%'))",
             nativeQuery = true
     )
     Page<Query> filterNameAndUser(String name, String user, Pageable pageable);
@@ -55,7 +57,7 @@ public interface QueryRepository extends JpaRepository<Query, Integer> {
      * @return Page o Paginacion de querys resultantes
      */
     @org.springframework.data.jpa.repository.Query(
-            value = "select q.* from public.query as q inner join (select * from public.comment as c where c.userregister = :user) as rs on q.idquery = rs.idquery",
+            value = "select q.* from public.query as q inner join (select * from public.comment as c where lower(c.userregister) like lower(concat('%',:user,'%')) as rs on q.idquery = rs.idquery",
             nativeQuery = true
     )
     Page<Query> filterUser(String user, Pageable pageable);
