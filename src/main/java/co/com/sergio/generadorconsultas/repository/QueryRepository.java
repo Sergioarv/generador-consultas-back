@@ -19,27 +19,25 @@ public interface QueryRepository extends JpaRepository<Query, Integer> {
 
     /**
      * Query encargada de realizar la seleccion de querys
-     * por el nombre de query y usuario del comentario
+     * por el nombre de query y usuario que crea la query
      *
      * @param name,     nombre del query
-     * @param user,     usuario que realiza el comentario
+     * @param createby,     usuario que crea la query
      * @param pageable, parametro para generar una paginación de la información buscada
      * @return Page o Paginacion de querys resultantes
      */
     @org.springframework.data.jpa.repository.Query(
-            value = "select q.* from public.query as q inner join " +
-                    "(select * from public.comment as c where lower(c.userregister) like lower(concat('%',:user,'%')) as rs " +
-                    "on q.idquery = rs.idquery where lower(name) like lower(concat('%',:name,'%'))",
+            value = "SELECT q.* FROM Query q WHERE LOWER(q.createby) LIKE LOWER(CONCAT('%', :createby, '%')) AND LOWER(q.name) LIKE LOWER(CONCAT('%', :name, '%'))",
             nativeQuery = true
     )
-    Page<Query> filterNameAndUser(String name, String user, Pageable pageable);
+    Page<Query> filterNameAndUser(String name, String createby, Pageable pageable);
 
     /**
      * Query encargada de realizar la seleccion de querys
      * por el nombre de query
      *
      * @param name,     nombre del query
-     * @param pageable, parametro para generar una paginación de la información buscada     * @param pageable, p
+     * @param pageable, parametro para generar una paginación de la información buscada
      * @return Page o Paginacion de querys resultantes
      */
     @org.springframework.data.jpa.repository.Query(
@@ -50,14 +48,14 @@ public interface QueryRepository extends JpaRepository<Query, Integer> {
 
     /**
      * Query encargada de realizar la seleccion de querys
-     * por el usuario del comentario
+     * por el usuario que la crea
      *
-     * @param user,     usuario que realiza el comentario
+     * @param user,     usuario que crea la query
      * @param pageable, parametro para generar una paginación de la información buscada
      * @return Page o Paginacion de querys resultantes
      */
     @org.springframework.data.jpa.repository.Query(
-            value = "select q.* from public.query as q inner join (select * from public.comment as c where lower(c.userregister) like lower(concat('%',:user,'%')) as rs on q.idquery = rs.idquery",
+            value = "select * from public.query as q where lower(q.createby) like lower(concat('%',:user,'%'))",
             nativeQuery = true
     )
     Page<Query> filterUser(String user, Pageable pageable);

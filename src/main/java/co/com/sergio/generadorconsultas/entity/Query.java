@@ -23,6 +23,9 @@ public class Query implements Serializable {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String createby;
+
     @OneToOne(cascade = CascadeType.ALL)
     private QuerySave querysave;
 
@@ -77,5 +80,13 @@ public class Query implements Serializable {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public String getCreateby() {
+        return createby;
+    }
+
+    public void setCreateby(String createby) {
+        this.createby = createby;
     }
 }

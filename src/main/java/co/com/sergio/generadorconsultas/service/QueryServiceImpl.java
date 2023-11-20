@@ -46,23 +46,23 @@ public class QueryServiceImpl implements QueryService {
     /**
      * Método encargado de buscar las querys por nombre de la query o nombre del usuario
      *
-     * @param name,          nombre con la que se encuentra guardada la query
-     * @param userresgister, usuario que realiza el comentario en la query
-     * @param pageable,      parametro para generar una paginación de la información buscada
+     * @param name,     nombre con la que se encuentra guardada la query
+     * @param createby, usuario que crea la query
+     * @param pageable, parametro para generar una paginación de la información buscada
      * @return Un Page o una paginación de los resultados
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<Query> filterQuerys(String name, String userresgister, Pageable pageable) {
+    public Page<Query> filterQuerys(String name, String createby, Pageable pageable) {
 
         Page<Query> resultList;
 
-        if (name != null && userresgister != null) {
-            resultList = queryRepository.filterNameAndUser(name, userresgister, pageable);
+        if (name != null && createby != null) {
+            resultList = queryRepository.filterNameAndUser(name, createby, pageable);
         } else if (name != null) {
             resultList = queryRepository.filterName(name, pageable);
-        } else if (userresgister != null) {
-            resultList = queryRepository.filterUser(userresgister, pageable);
+        } else if (createby != null) {
+            resultList = queryRepository.filterUser(createby, pageable);
         } else {
             resultList = queryRepository.findAll(pageable);
         }

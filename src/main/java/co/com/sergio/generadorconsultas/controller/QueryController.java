@@ -3,6 +3,7 @@ package co.com.sergio.generadorconsultas.controller;
 import co.com.sergio.generadorconsultas.entity.Query;
 import co.com.sergio.generadorconsultas.service.QueryService;
 import co.com.sergio.generadorconsultas.utils.GeneralResponse;
+import org.hibernate.PropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -66,16 +67,16 @@ public class QueryController {
     /**
      * Método encargado de buscar las querys por nombre de la query o nombre del usuario
      *
-     * @param name,          nombre con la que se encuentra guardada la query
-     * @param userresgister, usuario que realiza el comentario en la query
-     * @param pag,           número de la página a buscar
-     * @param sizePag,       cantidad de elementos por pagona
+     * @param name,     nombre con la que se encuentra guardada la query
+     * @param createby, usuario que crea la query
+     * @param pag,      número de la página a buscar
+     * @param sizePag,  cantidad de elementos por pagona
      * @return Un Page o una paginación de los resultados
      */
     @GetMapping("/filter")
     public ResponseEntity<GeneralResponse<Page<Query>>> filter(
             @RequestParam(value = "name", required = false) String name,
-            @RequestParam(value = "userregister", required = false) String userresgister,
+            @RequestParam(value = "createby", required = false) String createby,
             @RequestParam(value = "pag", defaultValue = "0", required = false) int pag,
             @RequestParam(value = "sizePag", defaultValue = "10", required = false) int sizePag
     ) {
@@ -83,9 +84,9 @@ public class QueryController {
         HttpStatus status = HttpStatus.OK;
         Page<Query> data;
 
-        Pageable pageable = PageRequest.of(pag, sizePag, Sort.by("idquery").ascending());
+        Pageable pageable = PageRequest.of(pag, sizePag);
 
-        data = queryService.filterQuerys(name, userresgister, pageable);
+        data = queryService.filterQuerys(name, createby, pageable);
 
         if (data != null) {
             response.setData(data);
@@ -133,10 +134,14 @@ public class QueryController {
                 response.setSuccess(false);
                 response.setMessage("Hubo un error al guardar la query");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             response.setData(null);
             response.setSuccess(false);
-            response.setMessage(e.getMessage());
+            if (e.getCause() instanceof PropertyValueException) {
+                response.setMessage("El valor " + ((PropertyValueException) e.getCause()).getPropertyName() + " esta vacio");
+            } else {
+                response.setMessage(e.getMessage());
+            }
         }
         return new ResponseEntity<>(response, status);
     }
@@ -154,7 +159,7 @@ public class QueryController {
         Query data;
         HttpStatus status = HttpStatus.OK;
 
-        try{
+        try {
             data = queryService.updateQuery(query);
 
             if (data != null) {
@@ -166,7 +171,7 @@ public class QueryController {
                 response.setSuccess(false);
                 response.setMessage("Hubo un error al actualizar la query");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             response.setData(null);
             response.setSuccess(false);
             response.setMessage(e.getMessage());
