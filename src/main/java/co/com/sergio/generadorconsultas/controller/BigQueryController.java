@@ -1,5 +1,6 @@
 package co.com.sergio.generadorconsultas.controller;
 
+import co.com.sergio.generadorconsultas.dto.DatosaGraficarDTO;
 import co.com.sergio.generadorconsultas.dto.SchedulesDTO;
 import co.com.sergio.generadorconsultas.service.BigQueryService;
 import co.com.sergio.generadorconsultas.utils.GeneralResponse;
@@ -84,6 +85,28 @@ public class BigQueryController {
 
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        }
+
+        return new ResponseEntity<>(response, httpStatus);
+    }
+
+    @GetMapping("/graficas")
+    public ResponseEntity<GeneralResponse<DatosaGraficarDTO>> graficas(){
+
+        GeneralResponse<DatosaGraficarDTO> response = new GeneralResponse<>();
+        DatosaGraficarDTO data;
+        HttpStatus httpStatus = HttpStatus.OK;
+
+        data = bigQueryService.graficas();
+
+        if(data != null){
+            response.setData(data);
+            response.setMessage("Datos de graficos correctos");
+            response.setSuccess(true);
+        }else {
+            response.setData(null);
+            response.setMessage("No Datos de graficos");
+            response.setSuccess(false);
         }
 
         return new ResponseEntity<>(response, httpStatus);

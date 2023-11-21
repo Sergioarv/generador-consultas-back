@@ -1,10 +1,10 @@
 package co.com.sergio.generadorconsultas.utils;
 
+import co.com.sergio.generadorconsultas.dto.DatosFrecuency;
 import co.com.sergio.generadorconsultas.dto.SchedulesDTO;
 import com.google.cloud.bigquery.FieldValueList;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
@@ -18,29 +18,29 @@ public class ConvertTo {
 
     /**
      * Método encargado de convertir un ResultList a SchedulesDTO
-     * @param fieldValueList, lista de parametros retornado por el BigQuery
+     * @param fVL, lista de parametros retornado por el BigQuery
      * @return Objecto SchedulesDTO con los parametros seteados
      */
-    public SchedulesDTO convertFieldValueListToSchedulesDTO(FieldValueList fieldValueList) {
+    public SchedulesDTO convertFieldValueListToSchedulesDTO(FieldValueList fVL) {
 
         SchedulesDTO schedulesDTO = new SchedulesDTO();
 
-        schedulesDTO.setGameId(fieldValueList.get("gameId").getStringValue());
-        schedulesDTO.setGameNumber(fieldValueList.get("gameNumber").getNumericValue().intValue());
-        schedulesDTO.setSeasonId(fieldValueList.get("seasonId").getStringValue());
-        schedulesDTO.setYear(fieldValueList.get("year").getNumericValue().intValue());
-        schedulesDTO.setType(fieldValueList.get("type").getStringValue());
-        schedulesDTO.setDayNight(fieldValueList.get("dayNight").getStringValue());
-        schedulesDTO.setDuration(fieldValueList.get("duration").getStringValue());
-        schedulesDTO.setDurationMinutes(fieldValueList.get("duration_minutes").getNumericValue().intValue());
-        schedulesDTO.setHomeTeamId(fieldValueList.get("homeTeamId").getStringValue());
-        schedulesDTO.setHomeTeamName(fieldValueList.get("homeTeamName").getStringValue());
-        schedulesDTO.setAwayTeamId(fieldValueList.get("awayTeamId").getStringValue());
-        schedulesDTO.setAwayTeamName(fieldValueList.get("awayTeamName").getStringValue());
-        schedulesDTO.setAttendance(fieldValueList.get("attendance").getNumericValue().intValue());
-        schedulesDTO.setStatus(fieldValueList.get("status").getStringValue());
-        schedulesDTO.setStartTime(convertTimestamp(fieldValueList.get("startTime").getNumericValue().longValue()) + " UTC");
-        schedulesDTO.setCreated(convertTimestamp(fieldValueList.get("created").getNumericValue().longValue()) + " UTC");
+        schedulesDTO.setGameId(fVL.get("gameId").getStringValue());
+        schedulesDTO.setGameNumber(fVL.get("gameNumber").getNumericValue().intValue());
+        schedulesDTO.setSeasonId(fVL.get("seasonId").getStringValue());
+        schedulesDTO.setYear(fVL.get("year").getNumericValue().intValue());
+        schedulesDTO.setType(fVL.get("type").getStringValue());
+        schedulesDTO.setDayNight(fVL.get("dayNight").getStringValue());
+        schedulesDTO.setDuration(fVL.get("duration").getStringValue());
+        schedulesDTO.setDurationMinutes(fVL.get("duration_minutes").getNumericValue().intValue());
+        schedulesDTO.setHomeTeamId(fVL.get("homeTeamId").getStringValue());
+        schedulesDTO.setHomeTeamName(fVL.get("homeTeamName").getStringValue());
+        schedulesDTO.setAwayTeamId(fVL.get("awayTeamId").getStringValue());
+        schedulesDTO.setAwayTeamName(fVL.get("awayTeamName").getStringValue());
+        schedulesDTO.setAttendance(fVL.get("attendance").getNumericValue().intValue());
+        schedulesDTO.setStatus(fVL.get("status").getStringValue());
+        schedulesDTO.setStartTime(convertTimestamp(fVL.get("startTime").getNumericValue().longValue()) + " UTC");
+        schedulesDTO.setCreated(convertTimestamp(fVL.get("created").getNumericValue().longValue()) + " UTC");
 
         return schedulesDTO;
     }
@@ -59,5 +59,20 @@ public class ConvertTo {
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         return dateFormat.format(startTime);
+    }
+
+    /**
+     * Método encargado de convertir un ResultList a DatosFrecuency
+     * @param fVL, lista de parametros retornado por el BigQuery
+     * @return Objecto  DatosFrecuency con los parametros seteados
+     */
+    public DatosFrecuency convertFieldValueListToDatosFrecuency(FieldValueList fVL) {
+
+        DatosFrecuency datosFrecuency = new DatosFrecuency();
+
+        datosFrecuency.setValue(fVL.get("value").getStringValue());
+        datosFrecuency.setFrecuency(Integer.parseInt(fVL.get("frecuency").getStringValue()));
+
+        return datosFrecuency;
     }
 }

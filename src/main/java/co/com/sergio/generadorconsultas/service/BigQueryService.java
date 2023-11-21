@@ -1,6 +1,6 @@
 package co.com.sergio.generadorconsultas.service;
 
-import co.com.sergio.generadorconsultas.dto.SchedulesDTO;
+import co.com.sergio.generadorconsultas.dto.*;
 import co.com.sergio.generadorconsultas.utils.ConvertTo;
 import com.google.cloud.bigquery.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,5 +162,53 @@ public class BigQueryService {
         }
 
         return params;
+    }
+
+    /**
+     * Método encargado de traer los datos a graficar desde apiBigQuery
+     * @return un Dto Datos a graficar
+     */
+    public DatosaGraficarDTO graficas() {
+
+        DatosaGraficarDTO datosaGraficarDTO = new DatosaGraficarDTO();
+        List<DatosFrecuency> result;
+        try {
+            result = queryCustom("SELECT status AS value, COUNT(*) AS frecuency FROM bigquery-public-data.baseball.schedules GROUP BY status ORDER BY status ASC");
+            datosaGraficarDTO.setStatusGameList(result);
+
+            result = queryCustom("SELECT daynight AS value, COUNT(*) AS frecuency FROM bigquery-public-data.baseball.schedules GROUP BY daynight ORDER BY daynight ASC");
+            datosaGraficarDTO.setDayNightGames(result);
+
+            result = queryCustom("SELECT duration AS value, COUNT(*) AS frecuency FROM bigquery-public-data.baseball.schedules GROUP BY duration ORDER BY duration ASC");
+            datosaGraficarDTO.setDurationFrequencyList(result);
+
+            return datosaGraficarDTO;
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Método encargado de realizar las consultas al api BigQuery de Google
+     * @param sql, consulta a realizar
+     * @return List de datosFrecuency
+     * @throws InterruptedException
+     */
+    private List<DatosFrecuency> queryCustom(String sql) throws InterruptedException {
+
+        QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(sql).build();
+        TableResult result = bigQuery.query(queryConfig);
+
+        ConvertTo convertTo = new ConvertTo();
+
+        List<DatosFrecuency> resultQuery = new ArrayList<>();
+
+        DatosFrecuency datosFrecuency = null;
+        for (FieldValueList fVL : result.iterateAll()) {
+            datosFrecuency = convertTo.convertFieldValueListToDatosFrecuency(fVL);
+            resultQuery.add(datosFrecuency);
+        }
+
+        return resultQuery;
     }
 }
